@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.post('/add-stock', jwtAuthMiddleware, addStock)
 
-router.get('/view/:symbol', jwtAuthMiddleware, viewStock)
+router.get('/view/:symbol',  viewStock)
 
 router.delete('/delete/:symbol', jwtAuthMiddleware, deleteStock)
 

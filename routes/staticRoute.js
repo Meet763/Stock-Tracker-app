@@ -17,13 +17,4 @@ router.get("/dashboard/add-stock", (req, res) => {
     res.render("dashboard")
 })
 
-router.get("/dashboard/view/:symbol", (req, res) => {
-    res.render("stockdetail")
-})
-
-router.get("/dashboard/view/:symbol/chart", (req, res) => {
-    res.render("chart")
-})
-
-
 module.exports = router

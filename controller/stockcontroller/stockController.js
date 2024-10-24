@@ -2,8 +2,6 @@ const axios = require('axios');
 require('dotenv').config();
 const Stock = require('../../models/stock')
 
-// Stock API key (replace with your actual key from Alpha Vantage)
-const API_KEY = process.env.STOCK_API_KEY; 
 
 // Route to fetch stock data
 const addStock = async (req, res) => {
@@ -45,33 +43,36 @@ const addStock = async (req, res) => {
 
 const viewStock = async (req, res) => {
   try {
-    // Extract stock symbol from the database or request
-    const stock = req.params.symbol; // Assuming you're getting the symbol from the request params
-    const interval = req.query.interval || '1min'
-    const apiUrl = `https://api.twelvedata.com/time_series?symbol=${stock}&interval=${interval}&apikey=${API_KEY}`;
+    const API_KEY = process.env.STOCK_API_KEY;  // Use the environment variable for the API key
+    const stock = req.params.symbol;   // Default to 'IBM' if no symbol is provided
+    const interval = req.query.interval || '1min';  // Default interval is '1min'
+
+    // Construct the API URL using the provided stock symbol and interval
+    const apiUrl = `https://api.twelvedata.com/time_series?symbol=${stock}&interval=${interval}&apikey=${API_KEY}&source=docs`;
     
     // Fetch stock data from the API
-    const response = await axios.get(costant);
-    console.log(response.data)
+    const response = await axios.get(apiUrl);
 
-    //Check if the response is valid and contains stock data
-    if (response.data) {
-      const stockData = response.data.values;
-      const stockMeta = response.data.meta; // Get the stock metadata
+    // Check if the response contains meta and values data
+    if (response.data && response.data.meta && response.data.values) {
+      const stockData = response.data.values;  // Extract stock data values
+      const stockMeta = response.data.meta;    // Extract stock metadata
 
-    // Render the EJS template with the stock data
-      return res.render('stockdetail', { stockData, stockMeta, interval});
+      // Send the stock metadata and data as JSON
+      //return res.status(200).json({ stockMeta, stockData });
+      return res.status(200).render('stockdetail', {stockMeta, stockData, interval})
     } else {
-      // If no data is found, render the template with empty data
-      return res.render('stockdetail', { stockData: [], stockMeta: {}, interval});
+      // Handle cases where stock data is missing or invalid
+      return res.status(404).json({ error: 'Stock data not found or invalid response' });
     }
+
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching stock data:', err.message);
+    
     // Handle errors, such as API failures or server issues
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
-
 
 
 const deleteStock = async (req, res) => {

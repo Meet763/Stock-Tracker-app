@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Detail for <%= stockMeta?.symbol %></title>
+    <title>Stock Detail</title>
     <style>
         body { font-family: Arial, sans-serif; }
         .stock-details { margin-bottom: 20px; }
@@ -14,7 +14,7 @@
     </style>
 </head>
 <body>
-    <% if (stockMeta && stockData) { %> 
+    <% if(locals.stockMeta && locals.stockData){ %>
         <h1>Stock Detail for <%= stockMeta.symbol %></h1>
         
         <div class="stock-details">
@@ -68,9 +68,8 @@
             </tbody>
         </table>
     <% } else { %>
-        <h2>No stock data or metadata available.</h2>
-    <% } %>
-
+        <p>there is no data <%= locals %>  and <%= locals.stockData %></p>    
+    <% } %>    
     <!-- Script to handle interval change -->
     <script>
         function changeInterval() {
