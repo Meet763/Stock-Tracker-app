@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Detail for <%= stockMeta?.symbol %></title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .stock-details { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        table, th, td { border: 1px solid black; }
+        th, td { padding: 10px; text-align: center; }
+        .interval-selector { margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <% if (stockMeta && stockData) { %> 
+        <h1>Stock Detail for <%= stockMeta.symbol %></h1>
+        
+        <div class="stock-details">
+            <div>Currency: <strong><%= stockMeta.currency %></strong></div>
+            <div>Exchange: <strong><%= stockMeta.exchange %></strong></div>
+            <div>Type: <strong><%= stockMeta.type %></strong></div>
+        </div>
+
+        <!-- Interval Selection Dropdown -->
+        <div class="interval-selector">
+            <label for="interval">Select Interval:</label>
+            <select id="interval" aria-placeholder="time-interval" onchange="changeInterval()">
+                <option value="1min" <%= interval === '1min' ? 'selected' : '' %>>1 Minute</option>
+                <option value="5min" <%= interval === '5min' ? 'selected' : '' %>>5 Minutes</option>
+                <option value="15min" <%= interval === '15min' ? 'selected' : '' %>>15 Minutes</option>
+                <option value="30min" <%= interval === '30min' ? 'selected' : '' %>>30 Minutes</option>
+                <option value="1h" <%= interval === '1h' ? 'selected' : '' %>>1 Hour</option>
+                <option value="1day" <%= interval === '1day' ? 'selected' : '' %>>1 Day</option>
+                <option value="1month" <%= interval === '1month' ? 'selected' : '' %>>1 Month</option>
+            </select>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Datetime</th>
+                    <th>Open</th>
+                    <th>High</th>
+                    <th>Low</th>
+                    <th>Close</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (stockData.length > 0) { %>
+                    <% stockData.forEach(data => { %>
+                        <tr>
+                            <td><%= data.datetime %></td>
+                            <td>$<%= data.open %></td>
+                            <td>$<%= data.high %></td>
+                            <td>$<%= data.low %></td>
+                            <td>$<%= data.close %></td>
+                            <td><%= data.volume %></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="6">No stock data available.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <h2>No stock data or metadata available.</h2>
+    <% } %>
+
+    <!-- Script to handle interval change -->
+    <script>
+        function changeInterval() {
+            const interval = document.getElementById('interval').value;
+            window.location.href = `?interval=${interval}`; // Reload the page with the selected interval
+        }
+    </script>
+</body>
+</html>

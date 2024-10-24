@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .symbol-list {
+            list-style: none;
+            padding: 0;
+        }
+        .symbol-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 5px 0;
+        }
+        .btn {
+            padding: 5px 10px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .view-btn {
+            background-color: #007bff; /* Blue */
+        }
+        .delete-btn {
+            background-color: #dc3545; /* Red */
+        }
+        form {
+            display: inline;
+        }
+        .no-symbols {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+        .alert {
+            color: red;
+            text-align: center;
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid red;
+            border-radius: 5px;
+            background-color: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dashboard</h1>
+
+    <% if (locals.error) { %>
+        <div class="alert"><%= error %></div> <!-- Display error message -->
+    <% } %>
+    
+    <form action="/dashboard/add-stock" method="POST">
+        <input type="text" name="stockTicker" placeholder="Enter symbol" required>
+        <button type="submit">Add Stock</button>
+    </form>
+
+    <h2>Stock WatchList</h2>
+    <ul class="symbol-list">
+        <% if (locals.symbols && locals.symbols.length > 0) { %> 
+            <% symbols.forEach(symbol => { %>
+                <li class="symbol-item">
+                    <span><%= symbol.stock %></span>
+                    <div>
+                        <form action="/dashboard/view/<%= symbol.stock %>" method="GET">
+                            <button type="submit" class="btn view-btn">View</button>
+                        </form>
+                        <form action="/dashboard/delete/<%= symbol.stock %>?_method=DELETE" method="POST">
+                            <button type="submit" class="btn delete-btn">Delete</button>
+                        </form>
+                    </div>
+                </li>
+            <% }) %>
+        <% } else { %>
+            <li class="no-symbols">No stocks added to your watchlist.</li>
+        <% } %> 
+     </ul>     
+</div>
+
+</body>
+</html>
